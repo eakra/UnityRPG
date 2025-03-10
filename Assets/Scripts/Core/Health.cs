@@ -25,6 +25,7 @@ namespace RPG.Core{
         private void Die() {
             isDead = true;
             GetComponent<Animator>().SetTrigger("die");
+            //GetComponent<CapsuleCollider>().enabled = false;
             GetComponent<ActionScheduler>().CancelCurrentAction();
         }
     }
