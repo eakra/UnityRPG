@@ -1,10 +1,13 @@
 using UnityEngine;
 using RPG.Core;
+using RPG.Saving;
+using RPG.Attributes;
 using UnityEngine.AI;
+using Newtonsoft.Json.Linq;
 
 namespace RPG.Movement
 {
-    public class Mover : MonoBehaviour, IAction
+    public class Mover : MonoBehaviour, IAction, IJsonSaveable
     {
         NavMeshAgent navMeshAgent; 
         Health health;
@@ -45,6 +48,20 @@ namespace RPG.Movement
             Vector3 localVelocity = transform.InverseTransformDirection(velocity);
             float forwardSpeed = localVelocity.z;
             GetComponent<Animator>().SetFloat("forwardSpeed", forwardSpeed);
+        }
+
+        public JToken CaptureAsJToken()
+        {
+            return transform.position.ToToken();
+        }
+
+        public void RestoreFromJToken(JToken state)
+        {
+            if (navMeshAgent == null) navMeshAgent = GetComponent<NavMeshAgent>();
+            navMeshAgent.enabled = false;
+            transform.position = state.ToVector3();
+            navMeshAgent.enabled = true;
+            GetComponent<ActionScheduler>().CancelCurrentAction();
         }
     }
 }

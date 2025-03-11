@@ -1,9 +1,9 @@
-using System;
 using UnityEngine;
-using RPG.Core;
-using UnityEngine.InputSystem.Interactions;
+using RPG.Attributes;
 
-namespace RPG.Combat {
+
+namespace RPG.Combat
+{
     [CreateAssetMenu(fileName = "Weapon", menuName = "Weapons/Make New Weapon", order = 0)]
     public class Weapon : ScriptableObject
     {
@@ -12,7 +12,7 @@ namespace RPG.Combat {
         [SerializeField] float weaponRange = 2f;
         [SerializeField] float weaponDamage = 5f;
         [SerializeField] bool isRightHanded = true;
-        [SerializeField] Projectile projectile = null;  
+        [SerializeField] Projectile projectile = null;
 
         const string weaponName = "Weapon";
 
@@ -27,23 +27,23 @@ namespace RPG.Combat {
                 weapon.name = weaponName;
             }
 
+            var overrideController = animator.runtimeAnimatorController as AnimatorOverrideController;
             if (animatorOverride != null)
             {
                 animator.runtimeAnimatorController = animatorOverride;
-            } else {
-                var overrideController = animator.runtimeAnimatorController as AnimatorOverrideController;
-                if (overrideController != null)
-                {
-                    animator.runtimeAnimatorController = overrideController.runtimeAnimatorController;
-                }
             }
+            else if (overrideController != null)
+            {
+                animator.runtimeAnimatorController = overrideController.runtimeAnimatorController;
+            }
+
         }
 
         private void DestroyOldWeapon(Transform rightHand, Transform leftHand)
         {
             Transform oldWeapon = rightHand.Find(weaponName);
             //Debug.Log("OldWeapon is " + oldWeapon);
-            
+
             if (oldWeapon == null)
             {
                 oldWeapon = leftHand.Find(weaponName);
@@ -51,7 +51,7 @@ namespace RPG.Combat {
             if (oldWeapon == null) return;
 
             oldWeapon.name = "DESTROYING";
-            
+
             Destroy(oldWeapon.gameObject);
         }
 
@@ -61,10 +61,10 @@ namespace RPG.Combat {
             else return leftHand;
         }
 
-        public void LaunchProjectile(Transform rightHand, Transform leftHand, Health target)
+        public void LaunchProjectile(Transform rightHand, Transform leftHand, Health target, GameObject instigator, float calculatedDamage)
         {
             Projectile projectileInstance = Instantiate(projectile, GetTransform(rightHand, leftHand).position, Quaternion.identity);
-            projectileInstance.SetTarget(target, weaponDamage);
+            projectileInstance.SetTarget(target, instigator, calculatedDamage);
         }
 
         public float GetRange()
@@ -80,7 +80,7 @@ namespace RPG.Combat {
         public bool HasProjectile()
         {
             return projectile != null;
-        }   
+        }
 
 
     }

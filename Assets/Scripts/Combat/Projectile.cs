@@ -1,4 +1,4 @@
-using RPG.Core;
+using RPG.Attributes;
 using UnityEngine;
 
 namespace RPG.Combat {
@@ -12,8 +12,11 @@ namespace RPG.Combat {
         [SerializeField] GameObject[] destroyedOnImpact = null;
 
         float damage = 0f;
-        Health target = null;
         float lifeTime = 0f;
+        Health target = null;
+
+        GameObject instigator = null;
+
 
         private void Update()
         {
@@ -24,10 +27,11 @@ namespace RPG.Combat {
             if (lifeTime > maxLifeTime) Destroy(gameObject);
         }
 
-        public void SetTarget(Health target, float damage)
+        public void SetTarget(Health target, GameObject instigator, float damage)
         {
             this.target = target;
             this.damage = damage;
+            this.instigator = instigator;
             transform.LookAt(GetAimLocation());
         }
 
@@ -43,7 +47,7 @@ namespace RPG.Combat {
             if (other.GetComponent<Health>() != target) return;
             if (target.IsDead()) return;
             
-            target.TakeDamage(damage);
+            target.TakeDamage(instigator, damage);
             speed = 0;
             
             if (hitEffect != null) Instantiate(hitEffect, GetAimLocation(), transform.rotation);
