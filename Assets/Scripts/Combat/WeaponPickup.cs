@@ -1,8 +1,9 @@
+using RPG.Control;
 using UnityEngine;
 
 namespace RPG.Combat {
 
-    public class WeaponPickup : MonoBehaviour
+    public class WeaponPickup : MonoBehaviour, IRaycastable
     {
         [SerializeField] Weapon weapon = null;
 
@@ -10,9 +11,29 @@ namespace RPG.Combat {
         {
             if (other.gameObject.tag == "Player")
             {
-                other.GetComponent<Fighter>().EquipWeapon(weapon);
-                Destroy(gameObject);
+                Pickup(other.GetComponent<Fighter>());
             }
         }
+
+        private void Pickup(Fighter fighter)
+        {
+            fighter.EquipWeapon(weapon);
+            Destroy(gameObject);
+        }
+
+        public bool HandleRaycast(PlayerController callingController)
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                Pickup(callingController.GetComponent<Fighter>());
+            }
+            return true;            
+        }
+
+        public CursorType GetCursorType()
+        {
+            return CursorType.Pickup;
+        }
+        
     }
 }

@@ -13,9 +13,13 @@ namespace RPG.Movement
         Health health;
         float maxSpeed = 6.0f;
 
-        private void Start(){
+        private void Awake()
+        {
             navMeshAgent = GetComponent<NavMeshAgent>();
             health = GetComponent<Health>();
+        }
+
+        private void Start(){
         }
 
         private void Update()

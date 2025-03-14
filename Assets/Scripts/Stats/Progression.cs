@@ -19,7 +19,6 @@ namespace RPG.Stats
 
         public float GetStat(Stat stat, CharacterClass characterClass, int level)
         {
-            Debug.Log("Passed in the following parameters:" + stat + " " + characterClass + " " + level);
             BuildLookup();
             //ProgressionCharacterClass classResult = Array.Find(characterClasses, x => x.characterClass == characterClass);
             //ProgressionStat statResult = Array.Find(classResult.stats, x => x.stat == stat);
